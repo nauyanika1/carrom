@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  </head>
+  <body>
+    <button onclick="EnterToLobby();">Enter Lobby</button>
+    <br /><br />
+
+    <select id="user">
+      <option value="1">User 1</option>
+      <option value="2">User 2</option>
+      <!--  <option value="3">User 3</option> -->
+    </select>
+    <select id="game">
+      <!--  
+    <option value="1">7UP Game</option>
+    <option value="4">Titali Game</option> 
+ <option value="6">Triple Chance</option>
+    <option value="7">Roulette</option>
+    <option value="8">FunTarget</option>
+   
+-->
+      <!--  <option value="3">Addhar Bhar</option>
+
+  -->
+      <option value="2">Dragon VS Tiger</option>
+
+      <option value="5">Lucky Ball</option>
+      <option value="9">WheelOfFortune</option>
+      <option value="10">PokerKing</option>
+      <option value="11">LuckyDice</option>
+    </select>
+    <button onclick="registerPlayer();">Register Player</button>
+
+    <br /><br /><br /><br />
+    <select id="spot">
+      <option value="0">Spot 0</option>
+      <option value="1">Spot 1</option>
+      <option value="2">Spot 2</option>
+      <option value="3">Spot 3</option>
+      <option value="4">Spot 4</option>
+      <option value="5">Spot 5</option>
+      <option value="6">Spot 6</option>
+      <option value="7">Spot 7</option>
+      <option value="8">Spot 8</option>
+      <option value="9">Spot 9</option>
+    </select>
+    <button onclick="OnChipMove();">On Chip Move</button>
+
+    <button onclick="Disconnect();">Disconnect</button>
+
+    <button onclick="OnWinNo()">On Win Number</button>
+
+    <button onclick="OnBetplace();">On Bet place</button>
+
+    <button onclick="OnWinAmount();">On Win Amount</button>
+    <button onclick="OnSendPoint();">OnSendPoint</button>
+
+    <button onclick="test();">test (show Bet)</button>
+    <button onclick="OnNotification();">On Notification</button>
+    <button onclick="OnBalance();">On Balance</button>
+
+    <button onclick="OnsenderNotification();">On sender Notification</button>
+
+    <button onclick="OnAcceptPoints();">On Accept Points</button>
+    <button onclick="OnRejectPoints();">On Reject Points</button>
+
+    <button onclick="onLeaveRoom();">On leave room</button>
+
+    <button onclick="onHistoryRecord();">on History Record</button>
+
+    <script>
+      let socketId;
+      var server = "http://localhost:5000";
+     // var server = "http://52.7.28.180:5000";
+      //var server = "https://jeetorummy.herokuapp.com";
+      // var server = "http://jeetogame.in:5000/";
+
+      var io = io(server, { transport: ["websocket"] });
+
+      function EnterToLobby() {
+        io.emit("onEnterLobby", { playerId: 2 });
+      }
+
+      function registerPlayer() {
+        var user_id = document.getElementById("user").value;
+        var game_id = document.getElementById("game").value;
+        io.emit("RegisterPlayer", {
+          playerId: user_id,
+          balance: 45000,
+          gameId: game_id,
+        });
+      }
+
+      function OnChipMove() {
+        var spot = document.getElementById("spot").value;
+        var user_id = document.getElementById("user").value;
+        var game_id = document.getElementById("game").value;
+        let obj = { playerId: user_id, spot: spot, chip: 10, position: "left" };
+        //obj[socketId] = socketId;
+        io.emit("OnChipMove", obj);
+      }
+
+      function OnWinNo() {
+        io.emit("generateWinNo", { spot: "1", chip: "10", position: "left" });
+      }
+
+      function Disconnect() {
+        io.emit("Disconnec", { spot: "0", chip: "10", position: "left" });
+      }
+
+      function OnBetplace() {
+        /* io.emit("OnBetsPlaced", {
+               playerId: "BW0001",
+               betValue: 10,
+                category: 1,
+               points: 90,
+             });
+      */
+        io.emit("OnBetsPlaced", {
+          playerId: "nauyanika@nmsgames.com",
+          /* bet_amount_green: 50,
+               bet_amount_red: 10,
+               bet_amount_yellow: 0,
+      */
+          /* bet_amount_tiger: 50,
+               bet_amount_tie: 10,
+               bet_amount_elep: 20,
+      */
+          /*     bet_amount_two_six: 20,
+               bet_amount_seven: 10,
+               bet_amount_eight_twelve: 40,
+      */
+          /*  bet_amount_zeroVal: 2,
+               bet_amount_oneVal: 2,
+               bet_amount_twoVal: 2,
+               bet_amount_threeVal: 2,
+               bet_amount_fourVal: 2,
+               bet_amount_fiveVal: 2,
+               bet_amount_sixVal: 2,
+               bet_amount_sevenVal: 2,
+               bet_amount_eightVal: 2,
+               bet_amount_nineVal: 5,
+               bet_amount_onefourVal: 2,
+               bet_amount_zerofiveVal: 10,
+               bet_amount_sixnineVal: 2,
+              */
+          bet_amount_Joker: 5,
+          bet_amount_Black: 5,
+          bet_amount_Red: 5,
+          bet_amount_Spade: 5,
+          bet_amount_Club: 5,
+          bet_amount_Diamond: 5,
+          bet_amount_Heart: 5,
+        });
+      }
+
+      function OnWinAmount() {
+        //io.emit("OnWinAmount", {playerId:"admin@gmail.com",win_points:100});
+        io.emit("OnWinAmount", {
+          playerId: "nauyanika@nmsgames",
+          win_points: 100,
+        });
+      }
+
+      function OnSendPoint() {
+        io.emit("OnSendPoints", {
+          senderId: "admin@gmail.com",
+          receiverId: "BW0001",
+          points: 100,
+          password: 12345,
+        });
+      }
+
+      function test() {
+        io.emit("test", { spot: "0", chip: "10", position: "left" });
+      }
+      function OnNotification() {
+        io.emit("OnNotification", {
+          playerId: "nauyanika@nmsgames.com",
+          //status: "1",
+          //user_read: "1",
+        });
+      }
+
+      function OnBalance() {
+        io.emit("OnBalance", {
+          playerId: "nauyanika@nmsgames.com",
+          //status: "1",
+          //user_read: "1",
+        });
+      }
+
+      function OnsenderNotification() {
+        io.emit("OnsenderNotification", { user_id: "admin@gmail.com" });
+      }
+
+      function OnAcceptPoints() {
+        io.emit("OnAcceptPoints", {
+          user_id: "admin@gmail.com",
+          notify_id: "1",
+        });
+      }
+
+      function OnRejectPoints() {
+        io.emit("OnRejectPoints", {
+          user_id: "admin@gmail.com",
+          notify_id: "1",
+        });
+      }
+
+      function onLeaveRoom() {
+        io.emit("onleaveRoom", { room: "dragon" });
+      }
+
+      function onHistoryRecord() {
+        io.emit("OnHistoryRecord", { room: "dragon" });
+      }
+
+      //====================================Dragon tiger Game===================================================
+
+      io.on("OnCurrentTimer", function (data) {
+        //emit: current round info(previousWins,botsBetsDetails,user_bal)
+        console.log(data);
+        socketId = data.socketId;
+      });
+
+      io.on("OnBetsPlaced", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnWinAmount", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnSendPoints", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnChipMove", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnWinNo", function (data) {
+        console.log(data);
+      });
+
+      io.on("test", function (data) {
+        console.log(data);
+      });
+
+      // io.on("OnBotsData", function (data) {
+      //     console.log(data)
+      // });
+
+      // // attach listener on client
+      // io.on("7updown", function (data) {
+      //     console.log(data)
+
+      // });
+
+      io.on("OnPlayerWin", function (data) {
+        console.log(data);
+      });
+      io.on("OnNotification", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnBalance", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnsenderNotification", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnAcceptPoints", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnRejectPoints", function (data) {
+        console.log(data);
+      });
+
+      io.on("onleaveRoom", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnHistoryRecord", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnTimerStart", function (data) {
+        console.log(data);
+      });
+
+      io.on("OnTimeUp", function (data) {
+        console.log("timeUp...");
+      });
+
+      io.on("OnWait", function (data) {
+        console.log("wait...");
+      });
+
+      //==========================================================================================================
+
+      //====================================7 up Game===================================================
+
+      // io.on("OnCurrentTimer", function (data) {  //emit: current round info(previousWins,botsBetsDetails,user_bal)
+      //     console.log(data)
+
+      // });
+
+      //    io.on("OnBetsPlaced", function (data) {
+      //        console.log(data)
+      //    })
+
+      //    io.on("OnChipMove", function (data) {
+      //        console.log(data)
+      //    });
+
+      //    // attach listener on client
+      // io.on("7updown", function (data) {
+      // 	console.log(data)
+
+      // });
+
+      //==========================================================================================================
+    </script>
+  </body>
+</html>
